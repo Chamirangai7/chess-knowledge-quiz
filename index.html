@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chess Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      text-align: center;
+    }
+    .quiz-container {
+      width: 80%;
+      margin: auto;
+      max-width: 600px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #0062ff;
+    }
+    .question {
+      margin-top: 20px;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      margin-top: 10px;
+    }
+    .options button {
+      padding: 10px;
+      margin: 5px 0;
+      background-color: #f1f1f1;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .options button:hover {
+      background-color: #d1e0ff;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 1.2em;
+    }
+    .celebration {
+      display: none;
+      font-size: 2em;
+      color: #0062ff;
+      animation: dust 2s ease;
+    }
+    @keyframes dust {
+      0% { opacity: 0; transform: scale(0.5); }
+      100% { opacity: 1; transform: scale(1.5); }
+    }
+    .chess-board {
+      width: 100%;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-container">
+    <h1>Chess Quiz</h1>
+    <div id="quiz"></div>
+    <div class="result" id="result"></div>
+    <div class="celebration" id="celebration">🎉 Congratulations! 🎉</div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "What is the name of the move where a pawn moves two squares forward on its first move?",
+        options: ["En passant", "Castling", "Double pawn move", "Pawn promotion"],
+        answer: 2,
+        explanation: "The correct answer is 'Double pawn move.' This rule allows a pawn to advance two squares on its initial move."
+      },
+      {
+        question: "Which chess piece can jump over other pieces?",
+        options: ["Bishop", "Queen", "Knight", "King"],
+        answer: 2,
+        explanation: "The correct answer is 'Knight.' Knights are the only pieces in chess that can jump over others."
+      },
+      {
+        question: "What is it called when a player sacrifices a piece to gain a positional advantage?",
+        options: ["Blunder", "Tactic", "Gambit", "Checkmate"],
+        answer: 2,
+        explanation: "The correct answer is 'Gambit.' A gambit involves sacrificing a piece to gain an advantage in position or development."
+      },
+      {
+        question: "What is the special move involving both the King and Rook?",
+        options: ["En passant", "Promotion", "Castling", "Stalemate"],
+        answer: 2,
+        explanation: "The correct answer is 'Castling.' Castling is a move that helps protect the King while developing the Rook."
+      },
+      {
+        question: "Identify the next best move for White in this position.",
+        options: ["a4", "b3", "c4", "d5"],
+        answer: 3,
+        explanation: "The correct answer is 'd5,' which advances White’s central control.",
+        image: "chess-board-1.jpg"
+      },
+      {
+        question: "Which piece moves diagonally across the board?",
+        options: ["Bishop", "Knight", "Rook", "Queen"],
+        answer: 0,
+        explanation: "The correct answer is 'Bishop,' which only moves diagonally."
+      },
+      {
+        question: "What is the term for a position where neither player can make a legal move?",
+        options: ["Check", "Checkmate", "Stalemate", "Draw"],
+        answer: 2,
+        explanation: "The correct answer is 'Stalemate.' In stalemate, the player has no legal moves but is not in check."
+      },
+      {
+        question: "Which move results in an immediate checkmate with a Queen and Bishop?",
+        options: ["Scholars Mate", "Fools Mate", "Kings Gambit", "Reti Opening"],
+        answer: 0,
+        explanation: "The correct answer is 'Scholars Mate,' a four-move checkmate using the Queen and Bishop."
+      },
+      {
+        question: "What is the most common opening move in chess?",
+        options: ["e4", "d4", "c4", "f3"],
+        answer: 0,
+        explanation: "The correct answer is 'e4,' which is often played for quick control of the center."
+      },
+      {
+        question: "What is it called when a pawn reaches the opposite end of the board?",
+        options: ["Promotion", "En passant", "Checkmate", "Stalemate"],
+        answer: 0,
+        explanation: "The correct answer is 'Promotion,' where a pawn is promoted to a Queen, Rook, Bishop, or Knight."
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function loadQuestion() {
+      const quizDiv = document.getElementById("quiz");
+      quizDiv.innerHTML = "";
+
+      const question = questions[currentQuestion];
+      quizDiv.innerHTML += `<div class="question">${currentQuestion + 1}. ${question.question}</div>`;
+      if (question.image) {
+        quizDiv.innerHTML += `<img src="${question.image}" class="chess-board" alt="Chess board">`;
+      }
+
+      const optionsDiv = document.createElement("div");
+      optionsDiv.className = "options";
+      question.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.innerHTML = option;
+        button.onclick = () => checkAnswer(index);
+        optionsDiv.appendChild(button);
+      });
+      quizDiv.appendChild(optionsDiv);
+    }
+
+    function checkAnswer(selected) {
+      const question = questions[currentQuestion];
+      const quizDiv = document.getElementById("quiz");
+
+      if (selected === question.answer) {
+        score++;
+      }
+      quizDiv.innerHTML += `<div class="explanation">Explanation: ${question.explanation}</div>`;
+      currentQuestion++;
+
+      if (currentQuestion < questions.length) {
+        setTimeout(loadQuestion, 2000);
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      const resultDiv = document.getElementById("result");
+      const celebrationDiv = document.getElementById("celebration");
+      const passMark = Math.ceil(questions.length * 0.6);
+      
+      resultDiv.innerHTML = `Your score is ${score}/${questions.length}. ${score >= passMark ? "You passed!" : "You failed."}`;
+      if (score >= passMark) {
+        celebrationDiv.style.display = "block";
+      }
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
